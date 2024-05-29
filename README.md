@@ -1,4 +1,5 @@
-# Open-Repositories-2024-Code
+# Tom Wrobel, Open Repositories 2024 Code
+
 Code released as part of Tom Wrobel's presentation to Open Repositories 2024
 
 The files in this repository were taken from ORA's (Oxford Research Archive, https://ora.ox.ac.uk) repository application based on Samvera Hyrax. The repository code is known internally as ora4.reviewinterface, and cannot be released as open source in time for Open Repositories 2024 due to potential hard set configuration values in the code. The attached code shows how ORA content is sent to and from the ORA DPS (Data Preservation Service). ora4.reviewinterface is available on request under MIT licence to trusted partners, but the code here - alongside ORA's [Fedora6.Client Ruby on Rails gem](https://github.com/bodleian/fedora6_client) should provide enough information for Samvera implementers looking to adopt a similar solution.
