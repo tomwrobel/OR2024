@@ -1,0 +1,164 @@
+{
+    "workflows": [
+        {
+            "name": "ora_custom_workflow",
+            "label": "ORA custom workflow",
+            "description": "A multi-step workflow for mediated deposit in which all deposit go to one adminset managed by a review admin/group. The review admin then selects and distributes it to other reviewers based on priority to be reviewed",
+            "allows_access_grant": true,
+            "actions": [
+                // stays in deposit server
+                {
+                    "name": "save_as_draft",
+                    "from_states": [],
+                    "transition_to": "draft",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::SetDraftAttributes",
+                        "Hyrax::Workflow::GrantEditToDepositor",
+                        "Hyrax::Workflow::DeactivateObject"
+                    ]
+                },
+                // move from deposit server to reviewer, but if it is already review server don't move, 
+                // based on UUID on review server to see if it already exists
+                // revoke edit permission from depositor on review server on deposit server
+                // TO DO: send email when submit to RT to ora@bodleian.ox.ac.uk - different email address to different type
+                {
+                    "name": "submit",
+                    "from_states": [{ "names": ["draft", "rejected"], "roles": ["registered"] }],
+                    "transition_to": "submitted",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::DeactivateObject",
+                        "Hyrax::Workflow::RevokeEditFromDepositor",
+                        "Hyrax::Workflow::GrantReadToDepositor",
+                        "Hyrax::Workflow::SetSubmittedAttributes",
+                        "Hyrax::Workflow::UntagReviewer",
+                        "Hyrax::Workflow::TransferToReview"
+                    ]
+                },
+                // on Review, set default metadata before reviewers start
+                // to work on the object
+                // TO DO: send email when submit to RT to ora@bodleian.ox.ac.uk - different email address to different type
+                {
+                    "name": "ingest",
+                    "from_states": [{ "names": ["submitted"], "roles": ["admin"] }],
+                    "transition_to": "ready",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::AutoUpdateMetadata",
+                        "Hyrax::Workflow::AutoUpdateFiles",
+                        "Hyrax::Workflow::AutoPublish",
+                        "Hyrax::Workflow::SendToDps"
+                    ]
+                },
+                // move from deposit server to reviewer, but if it is already review server don't move, 
+                // based on UUID on review server to see if it already exists
+                {
+                    "name": "claim",
+                    "from_states": [{ "names": ["ready", "referred", "escalated"], "roles": ["admin"] }],
+                    "transition_to": "in review",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
+                    ]
+                },
+                // move from deposit server to reviewer, but if it is already review server don't move, 
+                // based on UUID on review server to see if it already exists
+                {
+                    "name": "unclaim",
+                    "from_states": [{ "names": ["in review"], "roles": ["admin"] }],
+                    "transition_to": "ready",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::RevokeEditFromDepositor",
+                        "Hyrax::Workflow::UntagReviewer"
+                    ]
+                },
+
+                {
+                    "name": "refer",
+                    "from_states": [{ "names": ["in review"], "roles": ["admin"] }],
+                    "transition_to": "referred",
+                    "notifications": [],
+                    "methods": []
+                },
+                {
+                    "name": "escalate",
+                    "from_states": [{ "names": ["in review", "referred"], "roles": ["admin"] }],
+                    "transition_to": "escalated",
+                    "notifications": [],
+                    "methods": []
+                },
+                // tag for checkback
+                {
+                    "name": "complete_embargo_record",
+                    "from_states": [{ "names": ["published", "in review", "referred", "escalated"], "roles": ["admin"] }],
+                    "transition_to": "embargoed",
+                    "notifications": [],
+                    "methods": [
+                        // method(s) to embargo
+                        // "Hyrax::Workflow::DeactivateObject"
+                        "Hyrax::Workflow::Unpublish",
+                        "Hyrax::Workflow::Unpublish2",
+                        "Hyrax::Workflow::TransferToSymp"
+                        //"Hyrax::Workflow::SendToDps" not required as part of unpublish
+                    ]
+                },
+                // if it is only files are embargoed, this is where it goes but checkback tags 
+                // method to publish (update solr public), check if exists in public
+                // if symplectic objects will need to be handled specially
+                // will need to untag reviewer claim
+                {
+                    "name": "approve",
+                    "from_states": [{ "names": ["in review", "embargoed", "escalated", "referred"], "roles": ["admin"] }],
+                    "transition_to": "published",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::GrantReadToDepositor",
+                        "Hyrax::Workflow::RevokeEditFromDepositor",
+                        "Hyrax::Workflow::RegisterDoi",
+                        "Hyrax::Workflow::PublishToPublic",
+                        "Hyrax::Workflow::PublishToPublic2",
+                        "Hyrax::Workflow::TransferToSymp"
+                        // "Hyrax::Workflow::SendToDps" not required as part of PublishToPublic2
+                        // "Hyrax::Workflow::ActivateObject"
+                    ]
+                },
+                // everything is embargoed
+                // not allowed to go to public server
+                
+                {
+                    "name": "reject",
+                    "from_states": [{ "names": ["in review", "embargoed", "escalated", "referred"], "roles": ["admin"] }],
+                    "transition_to": "rejected",
+                    "notifications": [],
+                    "methods": [
+                        // "Hyrax::Workflow::DeactivateObject"
+                    ]
+                },
+
+                // workflow - deleted
+                // everything is embargoed
+                // not allowed to go to public server
+
+                {
+                    "name": "delete",
+                    "from_states": [{ "names": ["in review", "embargoed", "rejected", "escalated", "referred"], "roles": ["admin"] }],
+                    "transition_to": "deleted",
+                    "notifications": [],
+                    "methods": [
+                        "Hyrax::Workflow::DeactivateObject"
+                    ]
+                }, 
+                {
+                    "name": "undelete",
+                    "from_states": [{ "names": ["deleted"], "roles": ["admin"] }],
+                    "transition_to": "in review",
+                    "notifications": [],
+                    "methods": [
+                    ]
+                }
+            ]
+        }
+    ]
+}
