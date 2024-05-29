@@ -2,7 +2,11 @@
 
 Code released as part of Tom Wrobel's presentation to Open Repositories 2024, discussing the use of [Fedora6](https://fedora.lyrasis.org/) as a lightweight, turnkey, open source API layer over an OCFL Data Preservation Service.
 
-The files in this repository were taken from ORA's (Oxford Research Archive, https://ora.ox.ac.uk) repository application based on Samvera Hyrax. The repository code is known internally as ora4.reviewinterface, and is a Ruby on Rails application built upon the [Samvera Hyrax](https://hyrax.samvera.org/) platform (v2.5.1). It cannot be released as open source in time for Open Repositories 2024 due to potential hard set configuration values in the code. The attached code shows how ORA content is sent to and from the ORA DPS (Data Preservation Service), and how it integrates with existing workflows. ora4.reviewinterface is available on request under MIT licence to trusted partners, but the code here - alongside ORA's [Fedora6.Client Ruby on Rails gem](https://github.com/bodleian/fedora6_client) - should provide enough information for Samvera implementers looking to adopt a similar solution.
+The files in this repository were taken from ORA's (Oxford Research Archive, https://ora.ox.ac.uk) repository application based on Samvera Hyrax. The repository code is known internally as ora4.reviewinterface, and is a Ruby on Rails application built upon the [Samvera Hyrax](https://hyrax.samvera.org/) platform (v2.5.1). It cannot be released as open source in time for Open Repositories 2024 due to potential hard set configuration values in the code. 
+
+The attached code shows how ORA content is sent to and from the ORA DPS (Data Preservation Service), and how it integrates with existing workflows. ora4.reviewinterface is available on request under MIT licence to trusted partners, but the code here - alongside ORA's [Fedora6.Client Ruby on Rails gem](https://github.com/bodleian/fedora6_client) - should provide enough information for Samvera implementers looking to adopt a similar solution.
+
+Notably, there is very little actual code here that is not the ORA crosswalk code in data_model_object.rb. Even the code responsible for deciding what ORA content should be sent to the DPS and how it should be sent is merely 187 lines of code, much of it logging (dps.rb)
 
 For guidance on ORA's data model, see https://github.com/bodleian/ora_data_model and http://dx.doi.org/10.5287/bodleian:pr22x1bjE​
 
