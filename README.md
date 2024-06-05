@@ -1,6 +1,6 @@
 # Tom Wrobel, Open Repositories 2024 Code
 
-![oo-link](https://github.com/tomwrobel/OR2024/assets/1017927/d162af39-1a70-42b7-962a-6538624f87ce)
+![oo-large](https://github.com/tomwrobel/OR2024/assets/1017927/e52e01fd-054a-4ced-9fbe-a4b6c2d7457c)
 
 
 Code released as part of Tom Wrobel's presentation to Open Repositories 2024, discussing the use of [Fedora6](https://fedora.lyrasis.org/) as a lightweight, turnkey, open source API layer over an OCFL Data Preservation Service.
