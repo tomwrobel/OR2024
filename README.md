@@ -1,5 +1,8 @@
 # Tom Wrobel, Open Repositories 2024 Code
 
+![oo-link](https://github.com/tomwrobel/OR2024/assets/1017927/d162af39-1a70-42b7-962a-6538624f87ce)
+
+
 Code released as part of Tom Wrobel's presentation to Open Repositories 2024, discussing the use of [Fedora6](https://fedora.lyrasis.org/) as a lightweight, turnkey, open source API layer over an OCFL Data Preservation Service.
 
 The files in this repository were taken from ORA's (Oxford Research Archive, https://ora.ox.ac.uk) repository application based on Samvera Hyrax. The repository code is known internally as ora4.reviewinterface, and is a Ruby on Rails application built upon the [Samvera Hyrax](https://hyrax.samvera.org/) platform (v2.5.1). It cannot be released as open source in time for Open Repositories 2024 due to potential hard set configuration values in the code. 
